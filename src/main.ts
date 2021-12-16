@@ -7,9 +7,12 @@ const rl = require('readline').createInterface({
 })
 const question = util.promisify(rl.question).bind(rl)
 const args = process.argv.slice(2)
-const port = +args[0]
-const ipaddr = args[1] || '0.0.0.0'
-const connected: string[] = []
+// const port = +args[0]
+// const ipaddr = args[1] || '0.0.0.0'
+// const connected: string[] = []
+
+const source = args[0].split(':')
+const destination = args[1].split(':')
 
 // const sleep = (ms: number) => {
 // 	return new Promise((resolve) => {
@@ -23,20 +26,21 @@ const cout = (msg: string) => {
 }
 
 const sendMsg = (client: dgram.Socket, msg: string = 'hi') => {
-	if (connected.length > 0) {
-		client.send(Buffer.from(msg), +connected[1], connected[0])
-		return
-	}
+	client.send(Buffer.from(msg), +destination[1], destination[0])
+	// if (connected.length > 0) {
+	// 	client.send(Buffer.from(msg), +connected[1], connected[0])
+	// 	return
+	// }
 
-	if (port) {
-		client.send(Buffer.from(msg), port, ipaddr)
-	}
+	// if (port) {
+	// 	client.send(Buffer.from(msg), port, ipaddr)
+	// }
 }
 
 const server = async (client: dgram.Socket) => {
-	if (port) {
-		client.connect(port, ipaddr)
-	}
+	// if (port) {
+	client.connect(+destination[1], destination[0])
+	// }
 
 	while (true) {
 		const msg = await question('Write: ')
@@ -52,10 +56,10 @@ const main = async () => {
 		client.close()
 	})
 
-	client.once('message', (_msg, rinfo) => {
-		connected.push(rinfo.address)
-		connected.push(rinfo.port + '')
-	})
+	// client.once('message', (_msg, rinfo) => {
+	// 	connected.push(rinfo.address)
+	// 	connected.push(rinfo.port + '')
+	// })
 
 	client.on('message', (msg, rinfo) => {
 		cout(`anonymous: ${msg} from ${rinfo.address}:${rinfo.port}\nWrite: `)
@@ -67,7 +71,7 @@ const main = async () => {
 		await server(client)
 	})
 
-	client.bind()
+	client.bind(+source[1], source[0])
 }
 
 main().catch((err) => {
