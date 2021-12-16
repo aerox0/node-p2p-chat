@@ -52,9 +52,12 @@ const main = async () => {
 		client.close()
 	})
 
-	client.on('message', (msg, rinfo) => {
+	client.once('message', (_msg, rinfo) => {
 		connected.push(rinfo.address)
 		connected.push(rinfo.port + '')
+	})
+
+	client.on('message', (msg, rinfo) => {
 		cout(`anonymous: ${msg} from ${rinfo.address}:${rinfo.port}\nWrite: `)
 	})
 
