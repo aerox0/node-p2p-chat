@@ -29,13 +29,15 @@ const sendMsg = (client: dgram.Socket, msg: string = 'hi') => {
 	}
 
 	if (port) {
-		client.connect(port, ipaddr, () => {
-			client.send(Buffer.from(msg), port, ipaddr)
-		})
+		client.send(Buffer.from(msg), port, ipaddr)
 	}
 }
 
 const server = async (client: dgram.Socket) => {
+	if (port) {
+		client.connect(port, ipaddr)
+	}
+
 	while (true) {
 		const msg = await question('Write: ')
 		sendMsg(client, msg)
