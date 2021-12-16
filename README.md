@@ -10,7 +10,8 @@ Run chat `$ ./main-linux [dport] [dipaddr]`, on localhost is enough dport.
 
 Chat output: `server listening 0.0.0.0:54123`.
 
-Machine 1 to identify second machine it should receive its ip and addr for that from Machine 2 we have to send any message:
+Machine 1 to identify second machine it should receive its ip and port for that from Machine 2 we have to send any message:
+
 `Write: Hi!`
 
 Now we can chat with each other!
